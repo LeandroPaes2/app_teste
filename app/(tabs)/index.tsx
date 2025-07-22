@@ -13,15 +13,15 @@ export default function Index() {
       </Text>
 
       {/* onPress -> é uma propriedade que define o que acontece quando você clica, é tipo o onClick */}
-      <Link href={'/lista'} asChild>
+      {/* <Link href={'/lista'} asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Ir para Lista</Text>
         </TouchableOpacity>
       </Link>
-      
+
       <TouchableOpacity style={styles.button} onPress={() => router.push('/contato')} >
         <Text style={styles.buttonText}>Ir para Contato</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
 
     </View>

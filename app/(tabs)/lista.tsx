@@ -36,10 +36,10 @@ export default function Lista() {
             </View>
 
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/')}>
+            {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/')}>
                 <Ionicons style={styles.icon} name="chevron-back-circle-outline" />
                 <Text style={styles.buttonText}>Voltar</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
 
         </View >

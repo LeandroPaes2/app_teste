@@ -11,6 +11,9 @@ export default function Layout() {
                 else if (route.name === 'lista') iconName = 'list';
                 else if (route.name === 'contato') iconName = 'chatbubble';
                 else if (route.name === 'galeria') iconName = 'images';
+                else if (route.name === 'formulario') iconName = 'create';
+                
+        
 
                 return <Ionicons name={iconName} size={size} color={color} />
             },
