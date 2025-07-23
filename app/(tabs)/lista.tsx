@@ -1,38 +1,75 @@
-import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList, Pressable } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList, Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const dados = [
-    { id: '1', nome: 'Ana' },
-    { id: '2', nome: 'Carlos' },
-    { id: '3', nome: 'Mariana' },
-];
-export default function Lista() {
+type Pessoas = {
+    id: string;
+    nome: string;
+    email: string;
+}
 
+export default function Lista() {
     const router = useRouter();
+
+    const [dados, setDados] = useState<Pessoas[]>([
+        { id: '1', nome: 'Ana', email: 'maria@email.com' },
+        { id: '2', nome: 'Carlos', email: 'carlos@email.com' },
+        { id: '3', nome: 'Mariana', email: 'mariana@email.com' },
+    ]);
+
+    function removerItem(id: string) {
+        Alert.alert(
+            'Confirmar',
+            'Deseja realmente excluir esse item?',
+            [
+                {
+                    text: 'Sim',
+                    onPress: () => {
+                        const novaLinha = dados.filter(item => item.id !== id);
+                        setDados(novaLinha);
+                    },
+                    style: 'destructive'
+                },
+                {
+                    text: 'Nao',
+                    style: 'cancel'
+                }
+            ]
+        );
+    }
 
     return (
         <View style={styles.container}>
 
             <Text style={styles.title}>Lista de Usuários</Text>
 
-            <View style={{top: '40%', position: 'absolute'}}>
+            <View style={{ top: '40%', position: 'absolute' }}>
                 <FlatList
-                data={dados}
-                // key -> serve para identificar os itens da lista
-                keyExtractor={(item) => item.id}
-                // renderItem -> serve para renderizar os itens da lista
-                renderItem={({ item }) => (
-                    // Pressble -> cria um componente para toque (botão customizável)
-                    <Pressable
-                        style={styles.item}
-                        onPress={() => router.push(`/detalhes?nome=${encodeURIComponent(item.nome)}`)}
-                    >
-                        <Text style={styles.texto}>{item.nome}</Text>
-                    </Pressable>
-                    
-                )}
-            />
+                    data={dados}
+                    // key -> serve para identificar os itens da lista
+                    keyExtractor={(item) => item.id}
+                    // renderItem -> serve para renderizar os itens da lista
+                    renderItem={({ item }) => (
+
+                        <View style={styles.item}>
+                            <Text style={styles.texto}>Nome: {item.nome}</Text>
+                            <Text style={styles.texto}>Email: {item.email}</Text>
+
+                            <Pressable // Pressble -> cria um componente para toque (botão customizável)
+                            
+                                style={styles.botaoExcluir}
+                                onPress={() => removerItem(item.id)}>
+                                <Text style={styles.buttonText}>Excluir</Text>
+                            </Pressable>
+
+                        </View>
+
+                        
+
+
+                    )}
+                />
             </View>
 
 
@@ -97,4 +134,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
 
+    botaoExcluir: {
+        backgroundColor: '#ff5555',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+    },
 });

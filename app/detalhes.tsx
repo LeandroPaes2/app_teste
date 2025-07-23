@@ -11,7 +11,7 @@ export default function Detalhes() {
             <Text style={{ fontSize: 20 }}>Detalhes do usuário:</Text>
             <Text style={{ marginTop: 10, fontWeight: 'bold' }}>Nome: {nome}</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/lista')}>
                 <Ionicons style={styles.icon} name="chevron-back-circle-outline" />
                 <Text style={styles.buttonText}>Voltar</Text>
             </TouchableOpacity>
