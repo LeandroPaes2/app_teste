@@ -1,7 +1,11 @@
 import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList, Pressable, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native'; // para carregar os dados
+import { useCallback } from 'react'; // para carregar os dados
+
 
 type Pessoas = {
     id: string;
@@ -11,12 +15,24 @@ type Pessoas = {
 
 export default function Lista() {
     const router = useRouter();
+    const [dados, setDados] = useState<Pessoas[]>([]);
 
-    const [dados, setDados] = useState<Pessoas[]>([
-        { id: '1', nome: 'Ana', email: 'maria@email.com' },
-        { id: '2', nome: 'Carlos', email: 'carlos@email.com' },
-        { id: '3', nome: 'Mariana', email: 'mariana@email.com' },
-    ]);
+    // para carregar os dados
+    useFocusEffect( 
+    useCallback(() => {
+        const carregar = async () => {
+            const salvo = await AsyncStorage.getItem('dados');
+            if (salvo) {
+                setDados(JSON.parse(salvo)); // Converte os dados para um array
+            }
+        };
+        carregar();
+    }, [])
+);
+    // para salvar os dados
+    useEffect(() => {
+        AsyncStorage.setItem('dados', JSON.stringify(dados));
+    }, [dados]);
 
     function removerItem(id: string) {
         Alert.alert(
@@ -57,15 +73,30 @@ export default function Lista() {
                             <Text style={styles.texto}>Email: {item.email}</Text>
 
                             <Pressable // Pressble -> cria um componente para toque (botão customizável)
-                            
                                 style={styles.botaoExcluir}
                                 onPress={() => removerItem(item.id)}>
                                 <Text style={styles.buttonText}>Excluir</Text>
                             </Pressable>
 
+                            <Pressable
+                                style={styles.botaoExcluir}
+                                onPress={() =>
+                                    router.push({
+                                        pathname: `/editar`,
+                                        params: {
+                                            id: item.id,
+                                            nome: item.nome,
+                                            email: item.email
+                                        }
+                                    }
+                                    )}
+                            >
+                                <Text style={styles.buttonText}>Editar</Text>
+                            </Pressable>
+
                         </View>
 
-                        
+
 
 
                     )}

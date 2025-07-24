@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // para salvar os dados
 import { useEffect } from 'react'; // para carregar os dados salvos
+import InputPersonalizado from '../../components/InputPersonalizado';
+import BotaoPersonalizado from '../../components/BotaoPersonalizado';
 
 export default function Formulario() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
+    const [erroNome, setErroNome] = useState('');
+    const [erroEmail, setErroEmail] = useState('');
     const [dados, setDados] = useState<any[]>([]); // para armazenar os dados
     const router = useRouter();
 
@@ -55,9 +58,10 @@ export default function Formulario() {
 
     function salvar() {
         if (nome.trim() === '' || email.trim() === '') {
+            Alert.alert('Preencha todos os campos!')
             return;
         }
-
+        alert('Salvo com sucesso!')
         // Adiciona novo dado à lista, preservando os existentes
         const novoItem = { id: Date.now().toString, nome, email };
         setDados([...dados, novoItem]);
@@ -73,17 +77,53 @@ export default function Formulario() {
                 Formulário
             </Text>
 
-            <Text>
+
+
+            <InputPersonalizado
+                label="Nome"
+                value={nome}
+                onChangeText={setNome}
+                placeholder="Digite seu nome"
+                icon="person"
+                error={erroNome}
+            />
+
+            <InputPersonalizado
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Digite seu email"
+                icon="mail"
+                error={erroEmail}
+            />
+
+
+            <BotaoPersonalizado
+                titulo="Salvar"
+                onPress={salvar}
+                icone="checkmark-circle-outline"
+            />
+
+
+            <BotaoPersonalizado
+                titulo="Voltar"
+                onPress={() => router.back()}
+                cor="#ccc"
+                textoBranco={false}
+                icone="arrow-back"
+            />
+
+            {/* <Text>
                 Nome:
             </Text>
-            <TextInput
+            {/* <TextInput
                 placeholder='Digite seu nome...'
                 value={nome}
                 onChangeText={setNome}
                 style={style.input}>
-            </TextInput>
+            </TextInput> */}
 
-            <Text>
+            {/* <Text>
                 Email:
             </Text>
             <TextInput
@@ -92,7 +132,7 @@ export default function Formulario() {
                 onChangeText={setEmail}
                 keyboardType='email-address'
                 style={style.input}>
-            </TextInput>
+            </TextInput> */}
 
             {/* <TouchableOpacity style={style.botao} onPress={enviar}>
                 <FontAwesome name="send" size={18} color="white" style={style.icone} />
@@ -101,12 +141,12 @@ export default function Formulario() {
 
 
 
-            <TouchableOpacity style={style.botao} onPress={salvar}>
+            {/* <TouchableOpacity style={style.botao} onPress={salvar}>
                 <FontAwesome name="save" size={18} color="white" style={style.icone} />
                 <Text style={style.textoBotao}>Salvar</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <FlatList
+            {/* <FlatList
                 data={dados}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
@@ -116,7 +156,7 @@ export default function Formulario() {
                     </View>
                 )}
                 style={{ marginTop: 20 }}
-            />
+            /> */}
 
         </View>
     );
@@ -141,44 +181,44 @@ const style = StyleSheet.create({
         textAlign: 'center'
     },
 
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 15,
-        borderRadius: 5,
-        backgroundColor: 'white',
-    },
+    // input: {
+    //     borderWidth: 1,
+    //     borderColor: '#ccc',
+    //     padding: 10,
+    //     marginBottom: 15,
+    //     borderRadius: 5,
+    //     backgroundColor: 'white',
+    // },
 
-    botao: {
-        flexDirection: 'row',
-        backgroundColor: '#0a110aff',
-        padding: 12,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
-    },
-    icone: {
-        marginRight: 8,
-    },
+    // botao: {
+    //     flexDirection: 'row',
+    //     backgroundColor: '#0a110aff',
+    //     padding: 12,
+    //     borderRadius: 8,
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    //     marginTop: 10,
+    // },
+    // icone: {
+    //     marginRight: 8,
+    // },
 
-    textoBotao: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
+    // textoBotao: {
+    //     color: 'white',
+    //     fontSize: 16,
+    //     fontWeight: 'bold',
+    // },
 
-    item: {
-        backgroundColor: '#fff',
-        padding: 15,
-        marginBottom: 10,
-        borderRadius: 8,
-        alignItems: 'center',
+    // item: {
+    //     backgroundColor: '#fff',
+    //     padding: 15,
+    //     marginBottom: 10,
+    //     borderRadius: 8,
+    //     alignItems: 'center',
 
-    },
-    texto: {
-        fontSize: 18,
-    },
+    // },
+    // texto: {
+    //     fontSize: 18,
+    // },
 
 })
