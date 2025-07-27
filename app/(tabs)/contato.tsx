@@ -1,8 +1,9 @@
 import { useState } from 'react' // controla os valores digitados
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'; // adicionar icones: https://icons.expo.fyi/Index
+import Entypo from '@expo/vector-icons/Entypo'; // adicionar icones: https://icons.expo.fyi/Index
 import { useRouter } from 'expo-router';
-
+import InputPersonalizado from '../../components/InputPersonalizado';
+import BotaoPersonalizado from '../../components/BotaoPersonalizado';
 export default function Contato() {
     const [nome, setNome] = useState('');
     const [mensagem, setMensagem] = useState('');
@@ -22,7 +23,30 @@ export default function Contato() {
                 Formulário de Contato
             </Text>
 
-            <Text>
+            
+            <InputPersonalizado
+                label="Nome:"
+                value={nome}
+                onChangeText={setNome}
+                placeholder="Digite seu nome..."
+                icon="person"
+            />
+
+            <InputPersonalizado
+                label="Mensagem:"
+                value={mensagem}
+                onChangeText={setMensagem}
+                placeholder="Digite sua mensagem..."
+                icon="text"
+            />
+
+            <BotaoPersonalizado
+                titulo="Enviar"
+                onPress={enviar}
+                icone="send"
+            />
+
+            {/* <Text>
                 Nome:
             </Text>
             <TextInput
@@ -31,7 +55,6 @@ export default function Contato() {
                 onChangeText={setNome}
                 style={style.input}>
             </TextInput>
-
             <Text>
                 Mensagem:
             </Text>
@@ -41,12 +64,12 @@ export default function Contato() {
                 onChangeText={setMensagem}
                 multiline
                 style={style.input}>
-            </TextInput>
+            </TextInput> */}
 
-            <TouchableOpacity style={style.botao} onPress={enviar}>
+            {/* <TouchableOpacity style={style.botao} onPress={enviar}>
                 <FontAwesome name="send" size={18} color="white" style={style.icone} />
                 <Text style={style.textoBotao}>Enviar</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 }

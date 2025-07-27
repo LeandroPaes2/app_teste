@@ -5,13 +5,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // para sa
 import { useEffect } from 'react'; // para carregar os dados salvos
 import InputPersonalizado from '../../components/InputPersonalizado';
 import BotaoPersonalizado from '../../components/BotaoPersonalizado';
+import uuid from 'react-native-uuid'; // para gerar um id
+import { useUsuarios } from '../contexts/UsuarioContext';
 
 export default function Formulario() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [erroNome, setErroNome] = useState('');
     const [erroEmail, setErroEmail] = useState('');
-    const [dados, setDados] = useState<any[]>([]); // para armazenar os dados
+    const { adicionar } = useUsuarios();
+    //const [dados, setDados] = useState<any[]>([]); // para armazenar os dados
     const router = useRouter();
 
     // carregar os dados salvos
@@ -27,6 +30,10 @@ export default function Formulario() {
     }, []);
 
 
+    function validarNome(nome: string) {
+        const regex = /^[A-Za-zÀ-ÿ\s]{3,}$/;
+        return regex.test(nome.trim());
+    }
     function emailValido(email: string) {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -57,19 +64,48 @@ export default function Formulario() {
     }
 
     function salvar() {
-        if (nome.trim() === '' || email.trim() === '') {
+        let temErro = false;
+
+        if (nome.trim() === '' && email.trim() === '') {
             Alert.alert('Preencha todos os campos!')
             return;
         }
-        alert('Salvo com sucesso!')
+        if (nome.trim() === '') {
+            setErroNome('O nome é obrigatório');
+            temErro = true;
+        } else {
+            setErroNome('');
+        }
+
+        if (email.trim() === '') {
+            setErroEmail('O email é obrigatório');
+            temErro = true;
+        } else {
+            setErroEmail('');
+        }
+
+        if (!emailValido(email)) {
+            Alert.alert("Email inválido", "Por favor, digite um email válido.");
+            return;
+        }
+
+        if (!validarNome(nome)) {
+            Alert.alert("Nome inválido", "Por favor, digite um nome valido.");
+        }
+
+        Alert.alert('Salvo com sucesso!')
         // Adiciona novo dado à lista, preservando os existentes
-        const novoItem = { id: Date.now().toString, nome, email };
-        setDados([...dados, novoItem]);
+        // const novoItem = { id: Date.now().toString, nome, email };
+        // setDados([...dados, novoItem]);
+
+        adicionar({ id: uuid.v4(), nome, email }); // Adiciona um novo item na lista
+        router.push('/lista');
 
         // Limpa os campos
         setNome('');
         setEmail('');
     }
+
 
     return (
         <View style={style.container}>
@@ -77,14 +113,13 @@ export default function Formulario() {
                 Formulário
             </Text>
 
-
-
             <InputPersonalizado
                 label="Nome"
                 value={nome}
                 onChangeText={setNome}
                 placeholder="Digite seu nome"
                 icon="person"
+                obrigatorio
                 error={erroNome}
             />
 
@@ -94,6 +129,7 @@ export default function Formulario() {
                 onChangeText={setEmail}
                 placeholder="Digite seu email"
                 icon="mail"
+                obrigatorio
                 error={erroEmail}
             />
 

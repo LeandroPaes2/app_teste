@@ -5,55 +5,50 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native'; // para carregar os dados
 import { useCallback } from 'react'; // para carregar os dados
-
-
-type Pessoas = {
-    id: string;
-    nome: string;
-    email: string;
-}
+import { useUsuarios } from '../contexts/UsuarioContext';
+import BotaoPersonalizado from '../../components/BotaoPersonalizado';
 
 export default function Lista() {
     const router = useRouter();
-    const [dados, setDados] = useState<Pessoas[]>([]);
+    const { dados, editar, excluir } = useUsuarios();
 
     // para carregar os dados
-    useFocusEffect( 
-    useCallback(() => {
-        const carregar = async () => {
-            const salvo = await AsyncStorage.getItem('dados');
-            if (salvo) {
-                setDados(JSON.parse(salvo)); // Converte os dados para um array
-            }
-        };
-        carregar();
-    }, [])
-);
+    //     useFocusEffect( 
+    //     useCallback(() => {
+    //         const carregar = async () => {
+    //             const salvo = await AsyncStorage.getItem('dados');
+    //             if (salvo) {
+    //                 setDados(JSON.parse(salvo)); // Converte os dados para um array
+    //             }
+    //         };
+    //         carregar();
+    //     }, [])
+    // );
     // para salvar os dados
     useEffect(() => {
         AsyncStorage.setItem('dados', JSON.stringify(dados));
     }, [dados]);
 
-    function removerItem(id: string) {
-        Alert.alert(
-            'Confirmar',
-            'Deseja realmente excluir esse item?',
-            [
-                {
-                    text: 'Sim',
-                    onPress: () => {
-                        const novaLinha = dados.filter(item => item.id !== id);
-                        setDados(novaLinha);
-                    },
-                    style: 'destructive'
-                },
-                {
-                    text: 'Nao',
-                    style: 'cancel'
-                }
-            ]
-        );
-    }
+    // function removerItem(id: string) {
+    //     Alert.alert(
+    //         'Confirmar',
+    //         'Deseja realmente excluir esse item?',
+    //         [
+    //             {
+    //                 text: 'Sim',
+    //                 onPress: () => {
+    //                     const novaLinha = dados.filter(item => item.id !== id);
+    //                     setDados(novaLinha);
+    //                 },
+    //                 style: 'destructive'
+    //             },
+    //             {
+    //                 text: 'Nao',
+    //                 style: 'cancel'
+    //             }
+    //         ]
+    //     );
+    // }
 
     return (
         <View style={styles.container}>
@@ -72,9 +67,13 @@ export default function Lista() {
                             <Text style={styles.texto}>Nome: {item.nome}</Text>
                             <Text style={styles.texto}>Email: {item.email}</Text>
 
-                            <Pressable // Pressble -> cria um componente para toque (botão customizável)
+                            {/* <Pressable // Pressble -> cria um componente para toque (botão customizável)
                                 style={styles.botaoExcluir}
                                 onPress={() => removerItem(item.id)}>
+                                <Text style={styles.buttonText}>Excluir</Text>
+                            </Pressable> */}
+
+                            <Pressable style={styles.botaoExcluir} onPress={() => excluir(item.id)}>
                                 <Text style={styles.buttonText}>Excluir</Text>
                             </Pressable>
 
@@ -95,12 +94,15 @@ export default function Lista() {
                             </Pressable>
 
                         </View>
-
-
-
-
                     )}
                 />
+                
+                <BotaoPersonalizado
+                    titulo="Adicionar"
+                    onPress={() => router.push('/formulario')}
+                    icone="add-circle-outline"
+                />
+
             </View>
 
 

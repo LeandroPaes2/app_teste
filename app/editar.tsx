@@ -3,10 +3,13 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput, Button } from 'react-native-paper'; // biblioteca para estilizar o app
+import { useUsuarios } from './contexts/UsuarioContext';
+import InputPersonalizado from '../components/InputPersonalizado';
+import BotaoPersonalizado from '../components/BotaoPersonalizado';
 export default function Editar() {
     const { id, nome, email } = useLocalSearchParams();
     const router = useRouter();
-
+    const { editar } = useUsuarios();
     const [novoNome, setNovoNome] = useState(String(nome));
     const [novoEmail, setNovoEmail] = useState(String(email));
 
@@ -19,10 +22,10 @@ export default function Editar() {
 
         try {
             const dadosString = await AsyncStorage.getItem('dados'); // Recupera os dados do armazenamento
-            const lista = dadosString ? JSON.parse(dadosString) : []; // Converte os dados para um array
+            const lista = dadosString ? JSON.parse(dadosString) : []; // Converte os dados para um array | condição ? valor_se_verdadeiro : valor_se_falso
 
             // Atualiza o item na lista
-            const listaAtualizada = lista.map((item: any) =>
+            const listaAtualizada = lista.map((item: any) => // map -> percorre o array
                 item.id === id ? { ...item, nome: novoNome, email: novoEmail } : item
             );
 
@@ -30,7 +33,8 @@ export default function Editar() {
             await AsyncStorage.setItem('dados', JSON.stringify(listaAtualizada)); // Converte o array para uma string
 
             Alert.alert('Editado com sucesso!');
-            router.back();
+            editar({ id: Array.isArray(id) ? id[0] : id, nome: novoNome, email: novoEmail });
+            router.push('/lista');
         }
         catch (error) {
             Alert.alert('Erro ao salvar!');
@@ -42,7 +46,30 @@ export default function Editar() {
         <View style={estilos.container}>
             <Text style={estilos.titulo}>Editar Contato</Text>
 
-            <TextInput
+            <InputPersonalizado
+                label="Nome"
+                value={novoNome}
+                onChangeText={setNovoNome}
+                placeholder="Digite seu nome..."
+                icon="person"
+            />
+            
+            <InputPersonalizado
+                label="Email"
+                value={novoEmail}
+                onChangeText={setNovoEmail}
+                placeholder="Digite seu email..."
+                icon="mail"
+            />
+
+            <BotaoPersonalizado
+                titulo="Salvar"
+                onPress={salvarEdicao}
+                icone="save"
+                />
+            
+            
+            {/* <TextInput
                 style={estilos.input}
                 value={novoNome}
                 onChangeText={setNovoNome}
@@ -56,11 +83,11 @@ export default function Editar() {
                 onChangeText={setNovoEmail}
                 placeholder="Email"
                 mode="outlined"
-            />
+            /> */}
 
-            <Button mode="contained" onPress={salvarEdicao}>
+            {/* <Button mode="contained" onPress={salvarEdicao}>
                 Salvar
-            </Button>
+            </Button> */}
         </View>
     );
 

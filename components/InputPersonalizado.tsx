@@ -8,8 +8,8 @@ type Props = {
     onChangeText: (text: string) => void; // função para atualizar o valor
     placeholder: string; // placeholder
     icon: keyof typeof Ionicons.glyphMap; // icone
+    obrigatorio?: boolean; // indica se o campo é obrigatório
     error?: string; // mensagem de erro
-    secureTextEntry?: boolean; // senha
 };
 
 export default function InputPersonalizado({
@@ -18,24 +18,26 @@ export default function InputPersonalizado({
     onChangeText,
     placeholder,
     icon,
-    error,
-    secureTextEntry,
+    obrigatorio = false,
+    error = '',
 }: Props) {
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>{label}</Text>
+            <Text style={styles.label}>
+                {label}
+                {obrigatorio && <Text style={{ color: 'red' }}> *</Text>}
+            </Text>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, error && styles.inputComErro]}>
                 <Ionicons name={icon} size={24} style={styles.icon} />
-
                 <TextInput
-                    style={styles.input}
                     value={value}
                     onChangeText={onChangeText}
                     placeholder={placeholder}
-                    secureTextEntry={secureTextEntry}
+                    style={styles.input}
                 />
             </View>
+
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
@@ -69,10 +71,16 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 45,
         fontSize: 16,
+        backgroundColor: 'white',
     },
     error: {
         marginTop: 4,
         color: 'red',
         fontSize: 12,
+    },
+    inputComErro: {
+        backgroundColor: 'white',
+        borderColor: 'red',
+
     },
 });
